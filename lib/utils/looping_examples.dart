@@ -1,8 +1,9 @@
-import 'package:pemrograman_mobile/models/expense.dart';
+// lib/utils/looping_examples.dart
+
+import '../models/expense.dart';
+import '../services/category_service.dart'; // Impor service
 
 class LoopingExamples {
-  static List<Expense> expenses = [/* data */];
-
   // 1. Menghitung total dengan berbagai cara
   
   // Cara 1: For loop tradisional
@@ -34,7 +35,7 @@ class LoopingExamples {
 
   // Cara 4: fold method (paling efisien)
   static double calculateTotalFold(List<Expense> expenses) {
-    return expenses.fold(0, (sum, expense) => sum + expense.amount);
+    return expenses.fold(0.0, (sum, expense) => sum + expense.amount); // Perbaikan 0.0
   }
 
   // Cara 5: reduce method
@@ -58,7 +59,7 @@ class LoopingExamples {
   // Cara 2: firstWhere method
   static Expense? findExpenseWhere(List<Expense> expenses, String id) {
     try {
-      return expenses.firstWhere((expense) => expense.id == id);
+      return expenses.firstWhere((expense) => expense.id == id); // Akan error jika tidak ditemukan, jadi pakai try-catch
     } catch (e) {
       return null;
     }
@@ -67,10 +68,12 @@ class LoopingExamples {
   // 3. Filtering dengan berbagai cara
   
   // Cara 1: Loop manual dengan List.add()
-  static List<Expense> filterByCategoryManual(List<Expense> expenses, String category) {
+  static List<Expense> filterByCategoryManual(List<Expense> expenses, String categoryName) {
     List<Expense> result = [];
     for (Expense expense in expenses) {
-      if (expense.category.toLowerCase() == category.toLowerCase()) {
+      // Ambil nama kategori dari service
+      final catName = categoryService.getCategoryById(expense.categoryId).name;
+      if (catName.toLowerCase() == categoryName.toLowerCase()) {
         result.add(expense);
       }
     }
@@ -78,9 +81,10 @@ class LoopingExamples {
   }
 
   // Cara 2: where method (lebih efisien)
-  static List<Expense> filterByCategoryWhere(List<Expense> expenses, String category) {
-    return expenses.where((expense) => 
-      expense.category.toLowerCase() == category.toLowerCase()
-    ).toList();
+  static List<Expense> filterByCategoryWhere(List<Expense> expenses, String categoryName) {
+    return expenses.where((expense) {
+      final catName = categoryService.getCategoryById(expense.categoryId).name;
+      return catName.toLowerCase() == categoryName.toLowerCase();
+    }).toList();
   }
 }

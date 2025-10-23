@@ -1,17 +1,16 @@
-// lib/models/expense_manager.dart
+// lib/utils/expense_utilities.dart
 
-import 'expense.dart';
+import '../models/expense.dart';
 import '../services/category_service.dart'; // Impor service kategori
 
-// Ini adalah file Latihan 3 Anda, yang sudah diperbarui
-// agar sesuai dengan service dan model baru.
+// --- Dari Latihan 3 ---
 
 class ExpenseManager {
   // 1. Mendapatkan total pengeluaran per kategori
   static Map<String, double> getTotalByCategory(List<Expense> expenses) {
     Map<String, double> result = {};
     for (var expense in expenses) {
-      // PERBAIKAN: Ambil nama kategori dari service berdasarkan categoryId
+      // Ambil nama kategori dari service berdasarkan categoryId
       final categoryName = categoryService.getCategoryById(expense.categoryId).name;
       result[categoryName] = (result[categoryName] ?? 0) + expense.amount;
     }
@@ -35,7 +34,6 @@ class ExpenseManager {
   static List<Expense> searchExpenses(List<Expense> expenses, String keyword) {
     String lowerKeyword = keyword.toLowerCase();
     return expenses.where((expense) {
-      // PERBAIKAN: Ambil nama kategori dari service
       final categoryName = categoryService.getCategoryById(expense.categoryId).name;
       return expense.title.toLowerCase().contains(lowerKeyword) ||
           expense.description.toLowerCase().contains(lowerKeyword) ||
@@ -47,8 +45,7 @@ class ExpenseManager {
   static double getAverageDaily(List<Expense> expenses) {
     if (expenses.isEmpty) return 0;
     
-    // PERBAIKAN: Gunakan 0.0 untuk fold
-    double total = expenses.fold(0.0, (sum, expense) => sum + expense.amount); 
+    double total = expenses.fold(0.0, (sum, expense) => sum + expense.amount); // Perbaikan 0.0
     
     // Hitung jumlah hari unik
     Set<String> uniqueDays = expenses.map((expense) => 
